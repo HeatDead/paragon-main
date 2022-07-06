@@ -1,5 +1,6 @@
 package com.example.paragonmain.Entities;
 
+import com.example.paragonmain.Enums.Condition;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -24,4 +25,6 @@ public class CarEntity {
 
     @OneToOne
     private ModelEntity model;
+
+    private Condition condition;
 }

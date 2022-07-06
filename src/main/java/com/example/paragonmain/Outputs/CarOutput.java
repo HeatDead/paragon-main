@@ -1,14 +1,15 @@
-package com.example.paragonmain.Objects;
+package com.example.paragonmain.Outputs;
 
 import com.example.paragonmain.Enums.Condition;
+import lombok.Data;
 import lombok.Value;
 
-@Value
-public class Car {
+@Data
+public class CarOutput {
     Long id;
     int year;
     Double price;
-    Brand brand;
-    Model model;
+    String brand;
+    String model;
     Condition condition;
 }

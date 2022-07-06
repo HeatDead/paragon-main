@@ -6,13 +6,16 @@ import com.example.paragonmain.Mappers.ModelToDtoMapper;
 import com.example.paragonmain.Objects.Brand;
 import com.example.paragonmain.Objects.Car;
 import com.example.paragonmain.Objects.Model;
+import com.example.paragonmain.Outputs.CarOutput;
 import com.example.paragonmain.Requests.BrandRequest;
 import com.example.paragonmain.Requests.CarRequest;
+import com.example.paragonmain.Requests.EditCarRequest;
 import com.example.paragonmain.Requests.ModelRequest;
 import com.example.paragonmain.Services.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @RestController
@@ -31,16 +34,49 @@ public class CarController {
     }
 
     @GetMapping
-    public List<Car> getAllCars(@RequestParam(required = false) Long brand_id) {
+    public List<CarOutput> getAllCars(@RequestParam(required = false) Long brand_id) {
+        if (brand_id != null)
+            return carListToCarOutputList(carService.getAllCarsByBrand(brand_id));
+
+        return carListToCarOutputList(carService.getAllCars());
+    }
+
+    @GetMapping("/allInfo")
+    public List<Car> getAllCarsInfo(@RequestParam(required = false) Long brand_id) {
         if (brand_id != null)
             return carService.getAllCarsByBrand(brand_id);
 
         return carService.getAllCars();
     }
 
+    public List<CarOutput> carListToCarOutputList(List<Car> cars) {
+        List<CarOutput> carOutputs = new ArrayList<>();
+        for (Car car: cars) {
+            CarOutput carOutput = new CarOutput();
+            carOutput.setId(car.getId());
+            carOutput.setPrice(car.getPrice());
+            carOutput.setYear(car.getYear());
+            carOutput.setBrand(car.getBrand().getBrand());
+            carOutput.setModel(car.getModel().getModel());
+            carOutput.setCondition(car.getCondition());
+            carOutputs.add(carOutput);
+        }
+        return carOutputs;
+    }
+
     @PostMapping
     public void addCar(@RequestBody CarRequest request) {
         carService.addCar(request);
+    }
+
+    @PostMapping("/edit")
+    public void editCar(@RequestBody EditCarRequest request){
+        carService.editCar(request);
+    }
+
+    @PostMapping("/delete/{id}")
+    public void deleteCar(@PathVariable Long id){
+        carService.deleteCar(id);
     }
 
     @GetMapping("/brand")

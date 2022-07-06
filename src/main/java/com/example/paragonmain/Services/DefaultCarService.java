@@ -13,6 +13,7 @@ import com.example.paragonmain.Repositories.BrandRepository;
 import com.example.paragonmain.Repositories.CarRepository;
 import com.example.paragonmain.Repositories.ModelRepository;
 import com.example.paragonmain.Requests.CarRequest;
+import com.example.paragonmain.Requests.EditCarRequest;
 import com.example.paragonmain.Requests.ModelRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -83,7 +84,39 @@ public class DefaultCarService implements CarService {
         carEntity.setYear(carRequest.getYear());
         carEntity.setBrand(brandEntity);
         carEntity.setModel(modelEntity);
+        carEntity.setCondition(carRequest.getCondition());
+
         carRepository.save(carEntity);
+    }
+
+    @Override
+    public void editCar(EditCarRequest editCarRequest) {
+        if(carRepository.findById(editCarRequest.getId()).get() != null){
+            BrandEntity brandEntity = brandRepository.findById(editCarRequest.getBrand_id()).get();
+            ModelEntity modelEntity = modelRepository.findById(editCarRequest.getModel_id()).get();
+            if(brandEntity == null || modelEntity == null)
+                return;
+
+            if(modelEntity.getBrand().getId() != brandEntity.getId())
+                return;
+
+            CarEntity carEntity = new CarEntity();
+            carEntity.setId(editCarRequest.getId());
+            carEntity.setPrice(editCarRequest.getPrice());
+            carEntity.setYear(editCarRequest.getYear());
+            carEntity.setBrand(brandEntity);
+            carEntity.setModel(modelEntity);
+            carEntity.setCondition(editCarRequest.getCondition());
+
+            carRepository.save(carEntity);
+        }
+    }
+
+    @Override
+    public void deleteCar(Long car_id) {
+        CarEntity carEntity = carRepository.findById(car_id).get();
+        if(carEntity != null)
+            carRepository.delete(carEntity);
     }
 
     @Override

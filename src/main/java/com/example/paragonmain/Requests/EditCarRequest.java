@@ -4,7 +4,8 @@ import com.example.paragonmain.Enums.Condition;
 import lombok.Data;
 
 @Data
-public class CarRequest {
+public class EditCarRequest {
+    Long id;
     int year;
     Double price;
     Long brand_id;
