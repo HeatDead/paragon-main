@@ -29,8 +29,8 @@ public class CarController {
     private final ModelToDtoMapper modelMapper;
 
     @GetMapping("/{id}")
-    public Car getCarById(@PathVariable Long id) {
-        return carService.getCarById(id);
+    public CarOutput getCarById(@PathVariable Long id) {
+        return carToCarOutput(carService.getCarById(id));
     }
 
     @GetMapping
@@ -39,6 +39,18 @@ public class CarController {
             return carListToCarOutputList(carService.getAllCarsByBrand(brand_id));
 
         return carListToCarOutputList(carService.getAllCars());
+    }
+
+    @GetMapping("/allIds")
+    public List<Long> getAllCarsId(){
+        List<Long> ids = new ArrayList<>();
+        List<CarOutput> carOutputs = carListToCarOutputList(carService.getAllCars());
+
+        for(CarOutput carOutput : carOutputs){
+            ids.add(carOutput.getId());
+        }
+
+        return ids;
     }
 
     @GetMapping("/allInfo")
@@ -51,17 +63,20 @@ public class CarController {
 
     public List<CarOutput> carListToCarOutputList(List<Car> cars) {
         List<CarOutput> carOutputs = new ArrayList<>();
-        for (Car car: cars) {
-            CarOutput carOutput = new CarOutput();
-            carOutput.setId(car.getId());
-            carOutput.setPrice(car.getPrice());
-            carOutput.setYear(car.getYear());
-            carOutput.setBrand(car.getBrand().getBrand());
-            carOutput.setModel(car.getModel().getModel());
-            carOutput.setCondition(car.getCondition());
-            carOutputs.add(carOutput);
-        }
+        for (Car car: cars)
+            carOutputs.add(carToCarOutput(car));
         return carOutputs;
+    }
+
+    public CarOutput carToCarOutput(Car car){
+        CarOutput carOutput = new CarOutput();
+        carOutput.setId(car.getId());
+        carOutput.setPrice(car.getPrice());
+        carOutput.setYear(car.getYear());
+        carOutput.setBrand(car.getBrand().getBrand());
+        carOutput.setModel(car.getModel().getModel());
+        carOutput.setCondition(car.getCondition());
+        return carOutput;
     }
 
     @PostMapping
