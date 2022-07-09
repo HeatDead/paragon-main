@@ -23,6 +23,7 @@ public class DefaultTokenService implements TokenService{
 
         try {
             DecodedJWT decodedJWT = verifier.verify(token);
+            System.out.println(decodedJWT.getClaim("role"));
             if (!decodedJWT.getIssuer().equals("auth-service")) {
                 System.out.println("Issuer is incorrect");
                 log.error("Issuer is incorrect");
@@ -41,5 +42,13 @@ public class DefaultTokenService implements TokenService{
         }
 
         return true;
+    }
+
+    @Override
+    public String checkRole(String token) {
+        Algorithm algorithm = Algorithm.HMAC256(secretKey);
+        JWTVerifier verifier = JWT.require(algorithm).build();
+        DecodedJWT decodedJWT = verifier.verify(token);
+        return decodedJWT.getClaim("role").asString();
     }
 }

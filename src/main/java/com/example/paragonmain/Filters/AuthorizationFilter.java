@@ -5,6 +5,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Component;
+import org.springframework.util.AntPathMatcher;
 import org.springframework.web.filter.OncePerRequestFilter;
 
 import javax.servlet.FilterChain;
@@ -12,6 +13,8 @@ import javax.servlet.ServletException;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.List;
 
 
 @Component
@@ -21,6 +24,24 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
     @Value("${auth.enabled}")
     private boolean enabled;
+
+    private AntPathMatcher pathMatcher = new AntPathMatcher();
+
+    private static final List<String> AUTH_WHITELIST = Arrays.asList("/cars", "/cars/", "/cars/{spring:[0-9]+}", "/cars/allIds");
+
+    private static final List<String> ADMIN_WHITELIST = Arrays.asList("/cars/allInfo");
+    private static final List<String> MODERATOR_WHITELIST = Arrays.asList("/cars/allInfo");
+
+    @Override
+    protected boolean shouldNotFilter(HttpServletRequest request)
+            throws ServletException {
+        return AUTH_WHITELIST.stream().anyMatch(p -> pathMatcher.match(p, request.getRequestURI()));
+    }
+
+    protected boolean adminFilter(HttpServletRequest request)
+            throws ServletException {
+        return ADMIN_WHITELIST.stream().anyMatch(p -> pathMatcher.match(p, request.getRequestURI()));
+    }
 
     @Override
     protected void doFilterInternal(HttpServletRequest request,
@@ -41,8 +62,15 @@ public class AuthorizationFilter extends OncePerRequestFilter {
             response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
         else {
-            System.out.println("do filter");
-            filterChain.doFilter(request, response);
+            String token = authHeader.substring(7);
+            if(adminFilter(request)) {
+                System.out.println("ADMIN REQUEST");
+                if (tokenService.checkRole(token).equals("ADMIN"))
+                    filterChain.doFilter(request, response);
+                else response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+            }
+            else
+                filterChain.doFilter(request, response);
         }
     }
 
