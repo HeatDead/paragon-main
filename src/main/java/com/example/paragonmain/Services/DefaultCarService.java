@@ -84,6 +84,7 @@ public class DefaultCarService implements CarService {
         carEntity.setYear(carRequest.getYear());
         carEntity.setBrand(brandEntity);
         carEntity.setModel(modelEntity);
+        carEntity.setSold(false);
         carEntity.setCondition(carRequest.getCondition());
 
         carRepository.save(carEntity);

@@ -20,6 +20,8 @@ public class CarEntity {
     private int year;
     private Double price;
 
+    private boolean sold;
+
     @ManyToOne
     private BrandEntity brand;
 

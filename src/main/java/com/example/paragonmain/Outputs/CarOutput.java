@@ -9,7 +9,8 @@ public class CarOutput {
     Long id;
     int year;
     Double price;
-    String brand;
-    String model;
+    BrandOutput brand;
+    ModelOutput model;
+    boolean sold;
     Condition condition;
 }

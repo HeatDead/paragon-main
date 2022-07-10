@@ -10,5 +10,6 @@ public class Car {
     Double price;
     Brand brand;
     Model model;
+    boolean sold;
     Condition condition;
 }

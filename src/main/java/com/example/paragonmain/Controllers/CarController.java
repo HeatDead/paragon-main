@@ -6,7 +6,9 @@ import com.example.paragonmain.Mappers.ModelToDtoMapper;
 import com.example.paragonmain.Objects.Brand;
 import com.example.paragonmain.Objects.Car;
 import com.example.paragonmain.Objects.Model;
+import com.example.paragonmain.Outputs.BrandOutput;
 import com.example.paragonmain.Outputs.CarOutput;
+import com.example.paragonmain.Outputs.ModelOutput;
 import com.example.paragonmain.Requests.BrandRequest;
 import com.example.paragonmain.Requests.CarRequest;
 import com.example.paragonmain.Requests.EditCarRequest;
@@ -74,8 +76,11 @@ public class CarController {
         carOutput.setId(car.getId());
         carOutput.setPrice(car.getPrice());
         carOutput.setYear(car.getYear());
-        carOutput.setBrand(car.getBrand().getBrand());
-        carOutput.setModel(car.getModel().getModel());
+
+        carOutput.setBrand(new BrandOutput(car.getBrand().getId(), car.getBrand().getBrand()));
+        carOutput.setModel(new ModelOutput(car.getModel().getId(), car.getModel().getModel()));
+
+        carOutput.setSold(car.isSold());
         carOutput.setCondition(car.getCondition());
         return carOutput;
     }
