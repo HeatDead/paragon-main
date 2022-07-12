@@ -32,16 +32,16 @@ public class CarController {
     private final ModelToDtoMapper modelMapper;
 
     @GetMapping("/{id}")
-    public CarOutput getCarById(@PathVariable Long id) {
-        return carToCarOutput(carService.getCarById(id));
+    public Car getCarById(@PathVariable Long id) {
+        return carService.getCarById(id);
     }
 
     @GetMapping
-    public List<CarOutput> getAllCars(@RequestParam(required = false) Long brand_id) {
+    public List<Car> getAllCars(@RequestParam(required = false) Long brand_id) {
         if (brand_id != null)
-            return carListToCarOutputList(carService.getAllCarsByBrand(brand_id));
+            return carService.getAllCarsByBrand(brand_id);
 
-        return carListToCarOutputList(carService.getAllCars());
+        return carService.getAllCars();
     }
 
     @GetMapping("/allIds")
