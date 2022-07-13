@@ -9,12 +9,10 @@ import com.example.paragonmain.Objects.Model;
 import com.example.paragonmain.Outputs.BrandOutput;
 import com.example.paragonmain.Outputs.CarOutput;
 import com.example.paragonmain.Outputs.ModelOutput;
-import com.example.paragonmain.Requests.BrandRequest;
-import com.example.paragonmain.Requests.CarRequest;
-import com.example.paragonmain.Requests.EditCarRequest;
-import com.example.paragonmain.Requests.ModelRequest;
+import com.example.paragonmain.Requests.*;
 import com.example.paragonmain.Services.CarService;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -118,5 +116,10 @@ public class CarController {
     @PostMapping("/model")
     public void addModel(@RequestBody ModelRequest request){
         carService.addModel(request);
+    }
+
+    @PostMapping("/sold")
+    public void soldCar(@RequestBody SoldRequest soldRequest){
+        carService.soldCar(soldRequest);
     }
 }

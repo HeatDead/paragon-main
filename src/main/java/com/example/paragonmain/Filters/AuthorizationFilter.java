@@ -27,7 +27,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
     private AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    private static final List<String> AUTH_WHITELIST = Arrays.asList("/cars", "/cars/", "/cars/{spring:[0-9]+}", "/cars/allIds");
+    private static final List<String> AUTH_WHITELIST = Arrays.asList("/cars", "/cars/", "/cars/{spring:[0-9]+}", "/cars/allIds", "/cars/sold/*", "/cars/repair/*");
 
     private static final List<String> ADMIN_WHITELIST = Arrays.asList("/cars/allInfo");
     private static final List<String> MODERATOR_WHITELIST = Arrays.asList("/cars/allInfo");

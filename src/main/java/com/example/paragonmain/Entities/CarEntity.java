@@ -14,13 +14,15 @@ import javax.persistence.*;
 @Table(name = "cars")
 public class CarEntity {
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
     private int year;
     private Double price;
 
     private boolean sold;
+
+    private String owner;
 
     @ManyToOne
     private BrandEntity brand;

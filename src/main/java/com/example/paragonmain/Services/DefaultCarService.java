@@ -15,7 +15,9 @@ import com.example.paragonmain.Repositories.ModelRepository;
 import com.example.paragonmain.Requests.CarRequest;
 import com.example.paragonmain.Requests.EditCarRequest;
 import com.example.paragonmain.Requests.ModelRequest;
+import com.example.paragonmain.Requests.SoldRequest;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpHeaders;
 import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
@@ -166,5 +168,16 @@ public class DefaultCarService implements CarService {
         modelEntity.setModel(modelRequest.getModel());
         modelEntity.setBrand(brandEntity);
         modelRepository.save(modelEntity);
+    }
+
+    @Override
+    public void soldCar(SoldRequest soldRequest) {
+        CarEntity carEntity = carRepository.findById(soldRequest.getCar_id()).get();
+        if(carEntity == null)
+            return;
+
+        carEntity.setOwner(soldRequest.getUsername());
+        carEntity.setSold(true);
+        carRepository.save(carEntity);
     }
 }

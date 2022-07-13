@@ -7,6 +7,8 @@ import com.example.paragonmain.Objects.Model;
 import com.example.paragonmain.Requests.CarRequest;
 import com.example.paragonmain.Requests.EditCarRequest;
 import com.example.paragonmain.Requests.ModelRequest;
+import com.example.paragonmain.Requests.SoldRequest;
+import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 
@@ -21,4 +23,5 @@ public interface CarService {
     List<Model> getAllModelsByBrand(Long brand_id);
     void addBrand(Brand brand);
     void addModel(ModelRequest modelRequest);
+    void soldCar(SoldRequest soldRequest);
 }
