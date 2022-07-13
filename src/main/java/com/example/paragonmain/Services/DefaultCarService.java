@@ -72,6 +72,22 @@ public class DefaultCarService implements CarService {
     }
 
     @Override
+    public List<Car> getAllCarsByOwner(String user) {
+        Iterable<CarEntity> iterable = carRepository.findAllByOwner(user);
+
+        ArrayList<Car> cars = new ArrayList<>();
+        for (CarEntity carEntity : iterable){
+            if(carEntity.getBrand() == null || carEntity.getModel() == null){
+                carRepository.delete(carEntity);
+                continue;
+            }
+            cars.add(carMapper.carEntityToCar(carEntity));
+        }
+
+        return cars;
+    }
+
+    @Override
     public void addCar(CarRequest carRequest) {
         BrandEntity brandEntity = brandRepository.findById(carRequest.getBrand_id()).get();
         ModelEntity modelEntity = modelRepository.findById(carRequest.getModel_id()).get();

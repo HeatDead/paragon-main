@@ -69,6 +69,11 @@ public class CarController {
         return carOutputs;
     }
 
+    @GetMapping("/carsOf")
+    public List<Car> getAllCarsOfUser(@RequestParam String owner){
+        return carService.getAllCarsByOwner(owner);
+    }
+
     public CarOutput carToCarOutput(Car car){
         CarOutput carOutput = new CarOutput();
         carOutput.setId(car.getId());

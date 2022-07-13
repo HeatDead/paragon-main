@@ -27,7 +27,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
     private AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    private static final List<String> AUTH_WHITELIST = Arrays.asList("/cars", "/cars/", "/cars/{spring:[0-9]+}", "/cars/allIds", "/cars/sold/*", "/cars/repair/*");
+    private static final List<String> AUTH_WHITELIST = Arrays.asList("/cars", "/cars/", "/cars/{spring:[0-9]+}", "/cars/allIds", "/cars/sold/*", "/cars/repair/*", "/cars/carsOf");
 
     private static final List<String> ADMIN_WHITELIST = Arrays.asList("/cars/allInfo");
     private static final List<String> MODERATOR_WHITELIST = Arrays.asList("/cars/allInfo");
@@ -54,7 +54,7 @@ public class AuthorizationFilter extends OncePerRequestFilter {
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 
         if (authHeader == null || authHeader.isBlank()) {
-            System.out.println("SC_UNAUTHORIZED : " + authHeader);
+            System.out.println("SC_UNAUTHORIZED : " + authHeader + " " + request.getRequestURI());
             response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         }
         else if (!checkAuthorization(authHeader)) {
