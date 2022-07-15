@@ -17,6 +17,7 @@ public interface CarService {
     List<Car> getAllCars();
     List<Car> getAllCarsByBrand(Long brand_id);
     List<Car> getAllCarsByOwner(String user);
+    List<Long> getAllCarsIds();
     void addCar(CarRequest carRequest);
     void editCar(EditCarRequest editCarRequest);
     void deleteCar(Long car_id);

@@ -51,6 +51,8 @@ public class DefaultCarService implements CarService {
                 carRepository.delete(carEntity);
                 continue;
             }
+            if(carEntity.isSold())
+                continue;
             cars.add(carMapper.carEntityToCar(carEntity));
         }
 
@@ -65,8 +67,11 @@ public class DefaultCarService implements CarService {
 
         Iterable<CarEntity> iterable = carRepository.findAllByBrand(brandEntity);
         ArrayList<Car> cars = new ArrayList<>();
-        for (CarEntity carEntity : iterable)
+        for (CarEntity carEntity : iterable) {
+            if(carEntity.isSold())
+                continue;
             cars.add(carMapper.carEntityToCar(carEntity));
+        }
 
         return cars;
     }
@@ -82,6 +87,22 @@ public class DefaultCarService implements CarService {
                 continue;
             }
             cars.add(carMapper.carEntityToCar(carEntity));
+        }
+
+        return cars;
+    }
+
+    @Override
+    public List<Long> getAllCarsIds() {
+        Iterable<CarEntity> iterable = carRepository.findAll();
+
+        List<Long> cars = new ArrayList<>();
+        for (CarEntity carEntity : iterable){
+            if(carEntity.getBrand() == null || carEntity.getModel() == null){
+                carRepository.delete(carEntity);
+                continue;
+            }
+            cars.add(carEntity.getId());
         }
 
         return cars;

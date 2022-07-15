@@ -44,14 +44,7 @@ public class CarController {
 
     @GetMapping("/allIds")
     public List<Long> getAllCarsId(){
-        List<Long> ids = new ArrayList<>();
-        List<CarOutput> carOutputs = carListToCarOutputList(carService.getAllCars());
-
-        for(CarOutput carOutput : carOutputs){
-            ids.add(carOutput.getId());
-        }
-
-        return ids;
+        return carService.getAllCarsIds();
     }
 
     @GetMapping("/allInfo")
@@ -123,6 +116,7 @@ public class CarController {
         carService.addModel(request);
     }
 
+    //Запрос микросервиса
     @PostMapping("/sold")
     public void soldCar(@RequestBody SoldRequest soldRequest){
         carService.soldCar(soldRequest);
