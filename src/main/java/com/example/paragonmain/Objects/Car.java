@@ -10,6 +10,7 @@ public class Car {
     Double price;
     Brand brand;
     Model model;
+    String img_url;
     boolean sold;
     Condition condition;
 }

@@ -11,6 +11,7 @@ public class CarOutput {
     Double price;
     BrandOutput brand;
     ModelOutput model;
+    String img_url;
     boolean sold;
     Condition condition;
 }

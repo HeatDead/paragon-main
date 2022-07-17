@@ -9,5 +9,6 @@ public class CarRequest {
     Double price;
     Long brand_id;
     Long model_id;
+    String img_url;
     Condition condition;
 }

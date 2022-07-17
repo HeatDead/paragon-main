@@ -124,6 +124,7 @@ public class DefaultCarService implements CarService {
         carEntity.setBrand(brandEntity);
         carEntity.setModel(modelEntity);
         carEntity.setSold(false);
+        carEntity.setImg_url(carRequest.getImg_url());
         carEntity.setCondition(carRequest.getCondition());
 
         carRepository.save(carEntity);
@@ -146,6 +147,7 @@ public class DefaultCarService implements CarService {
             carEntity.setYear(editCarRequest.getYear());
             carEntity.setBrand(brandEntity);
             carEntity.setModel(modelEntity);
+            carEntity.setImg_url(editCarRequest.getImg_url());
             carEntity.setCondition(editCarRequest.getCondition());
 
             carRepository.save(carEntity);

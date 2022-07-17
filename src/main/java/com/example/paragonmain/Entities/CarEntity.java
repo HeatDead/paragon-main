@@ -20,6 +20,8 @@ public class CarEntity {
     private int year;
     private Double price;
 
+    private String img_url;
+
     private boolean sold;
 
     private String owner;
