@@ -24,13 +24,11 @@ import java.util.List;
 @RequiredArgsConstructor
 public class CarController {
     private final CarService carService;
-    private final CarToDtoMapper carMapper;
 
     private final BrandToDtoMapper brandMapper;
-    private final ModelToDtoMapper modelMapper;
 
-    @GetMapping("/{id}")
-    public Car getCarById(@PathVariable Long id) {
+    @GetMapping("/getCarById")
+    public Car getCarById(@RequestParam Long id) {
         return carService.getCarById(id);
     }
 
@@ -62,6 +60,7 @@ public class CarController {
         return carOutputs;
     }
 
+    //Запрос микросервиса
     @GetMapping("/carsOf")
     public List<Car> getAllCarsOfUser(@RequestParam String owner){
         return carService.getAllCarsByOwner(owner);
@@ -91,8 +90,8 @@ public class CarController {
         carService.editCar(request);
     }
 
-    @PostMapping("/delete/{id}")
-    public void deleteCar(@PathVariable Long id){
+    @PostMapping("/delete")
+    public void deleteCar(@RequestParam Long id){
         carService.deleteCar(id);
     }
 

@@ -27,10 +27,13 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
     private AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    private static final List<String> AUTH_WHITELIST = Arrays.asList("/cars", "/cars/", "/cars/{spring:[0-9]+}", "/cars/allIds", "/cars/sold/*", "/cars/repair/*", "/cars/carsOf");
+    private static final List<String> AUTH_WHITELIST = Arrays.asList("/cars", "/cars/","/cars/*" , "/cars/getCarById",
+            "/cars/allIds", "/cars/repair/*", "/cars/carsOf");
 
     private static final List<String> ADMIN_WHITELIST = Arrays.asList("/cars/allInfo");
-    private static final List<String> MODERATOR_WHITELIST = Arrays.asList("/cars/allInfo");
+    private static final List<String> WORKER_WHITELIST = Arrays.asList();
+    private static final List<String> MODERATOR_WHITELIST = Arrays.asList("/cars/allInfo"); // "/cars"
+    private static final List<String> MSERVICE_WHITELIST = Arrays.asList("/cars/sold");
 
     @Override
     protected boolean shouldNotFilter(HttpServletRequest request)
@@ -41,6 +44,21 @@ public class AuthorizationFilter extends OncePerRequestFilter {
     protected boolean adminFilter(HttpServletRequest request)
             throws ServletException {
         return ADMIN_WHITELIST.stream().anyMatch(p -> pathMatcher.match(p, request.getRequestURI()));
+    }
+
+    protected boolean moderatorFilter(HttpServletRequest request)
+            throws ServletException {
+        return MODERATOR_WHITELIST.stream().anyMatch(p -> pathMatcher.match(p, request.getRequestURI()));
+    }
+
+    protected boolean workerFilter(HttpServletRequest request)
+            throws ServletException {
+        return WORKER_WHITELIST.stream().anyMatch(p -> pathMatcher.match(p, request.getRequestURI()));
+    }
+
+    protected boolean microserviceFilter(HttpServletRequest request)
+            throws ServletException {
+        return MSERVICE_WHITELIST.stream().anyMatch(p -> pathMatcher.match(p, request.getRequestURI()));
     }
 
     @Override
@@ -67,10 +85,30 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                 System.out.println("ADMIN REQUEST");
                 if (tokenService.checkRole(token).equals("ADMIN"))
                     filterChain.doFilter(request, response);
-                else response.setStatus(HttpServletResponse.SC_FORBIDDEN);
+                //response.setStatus(HttpServletResponse.SC_FORBIDDEN);
             }
-            else
+            if(moderatorFilter(request)) {
+                System.out.println("MODERATOR REQUEST");
+                if (tokenService.checkRole(token).equals("MODERATOR"))
+                    filterChain.doFilter(request, response);
+            }
+            if (workerFilter(request)) {
+                System.out.println("WORKER REQUEST");
+                if (tokenService.checkRole(token).equals("WORKER"))
+                    filterChain.doFilter(request, response);
+            }
+            if (microserviceFilter(request)) {
+                System.out.println("MICROSERVICE REQUEST");
+                if (tokenService.checkRole(token).equals("MICROSERVICE"))
+                    filterChain.doFilter(request, response);
+            }
+
+            if (!microserviceFilter(request) && !workerFilter(request) && !moderatorFilter(request) && !adminFilter(request)) {
                 filterChain.doFilter(request, response);
+                return;
+            }
+
+            response.setStatus(HttpServletResponse.SC_FORBIDDEN);
         }
     }
 
