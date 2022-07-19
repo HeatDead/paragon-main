@@ -1,8 +1,7 @@
 package com.example.paragonmain.Controllers;
 
+import com.example.paragonmain.Exceptions.ObjectNotFoundException;
 import com.example.paragonmain.Mappers.BrandToDtoMapper;
-import com.example.paragonmain.Mappers.CarToDtoMapper;
-import com.example.paragonmain.Mappers.ModelToDtoMapper;
 import com.example.paragonmain.Objects.Brand;
 import com.example.paragonmain.Objects.Car;
 import com.example.paragonmain.Objects.Model;
@@ -12,7 +11,6 @@ import com.example.paragonmain.Outputs.ModelOutput;
 import com.example.paragonmain.Requests.*;
 import com.example.paragonmain.Services.CarService;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpHeaders;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -28,12 +26,12 @@ public class CarController {
     private final BrandToDtoMapper brandMapper;
 
     @GetMapping("/getCarById")
-    public Car getCarById(@RequestParam Long id) {
+    public Car getCarById(@RequestParam Long id) throws ObjectNotFoundException {
         return carService.getCarById(id);
     }
 
     @GetMapping
-    public List<Car> getAllCars(@RequestParam(required = false) Long brand_id) {
+    public List<Car> getAllCars(@RequestParam(required = false) Long brand_id) throws ObjectNotFoundException {
         if (brand_id != null)
             return carService.getAllCarsByBrand(brand_id);
 
@@ -46,18 +44,11 @@ public class CarController {
     }
 
     @GetMapping("/allInfo")
-    public List<Car> getAllCarsInfo(@RequestParam(required = false) Long brand_id) {
+    public List<Car> getAllCarsInfo(@RequestParam(required = false) Long brand_id) throws ObjectNotFoundException {
         if (brand_id != null)
             return carService.getAllCarsByBrand(brand_id);
 
         return carService.getAllCars();
-    }
-
-    public List<CarOutput> carListToCarOutputList(List<Car> cars) {
-        List<CarOutput> carOutputs = new ArrayList<>();
-        for (Car car: cars)
-            carOutputs.add(carToCarOutput(car));
-        return carOutputs;
     }
 
     //Запрос микросервиса
@@ -81,17 +72,17 @@ public class CarController {
     }
 
     @PostMapping
-    public void addCar(@RequestBody CarRequest request) {
+    public void addCar(@RequestBody CarRequest request) throws ObjectNotFoundException {
         carService.addCar(request);
     }
 
     @PostMapping("/edit")
-    public void editCar(@RequestBody EditCarRequest request){
+    public void editCar(@RequestBody EditCarRequest request) throws ObjectNotFoundException{
         carService.editCar(request);
     }
 
     @PostMapping("/delete")
-    public void deleteCar(@RequestParam Long id){
+    public void deleteCar(@RequestParam Long id) throws ObjectNotFoundException{
         carService.deleteCar(id);
     }
 
@@ -101,7 +92,7 @@ public class CarController {
     }
 
     @GetMapping("/model")
-    public List<Model> getAllModels(@RequestParam Long brand_id){
+    public List<Model> getAllModels(@RequestParam Long brand_id) throws ObjectNotFoundException{
         return carService.getAllModelsByBrand(brand_id);
     }
 
@@ -111,13 +102,13 @@ public class CarController {
     }
 
     @PostMapping("/model")
-    public void addModel(@RequestBody ModelRequest request){
+    public void addModel(@RequestBody ModelRequest request) throws ObjectNotFoundException{
         carService.addModel(request);
     }
 
     //Запрос микросервиса
     @PostMapping("/sold")
-    public void soldCar(@RequestBody SoldRequest soldRequest){
+    public void soldCar(@RequestBody SoldRequest soldRequest) throws ObjectNotFoundException{
         carService.soldCar(soldRequest);
     }
 }

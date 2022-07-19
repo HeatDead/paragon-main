@@ -3,6 +3,7 @@ package com.example.paragonmain.Services;
 import com.example.paragonmain.Entities.BrandEntity;
 import com.example.paragonmain.Entities.CarEntity;
 import com.example.paragonmain.Entities.ModelEntity;
+import com.example.paragonmain.Exceptions.ObjectNotFoundException;
 import com.example.paragonmain.Mappers.BrandToEntityMapper;
 import com.example.paragonmain.Mappers.CarToEntityMapper;
 import com.example.paragonmain.Mappers.ModelToEntityMapper;
@@ -36,8 +37,9 @@ public class DefaultCarService implements CarService {
     private final ModelToEntityMapper modelMapper;
 
     @Override
-    public Car getCarById(Long id) {
-        CarEntity carEntity = carRepository.findById(id).get();
+    public Car getCarById(Long id) throws ObjectNotFoundException {
+        CarEntity carEntity = carRepository.findById(id)
+                .orElseThrow(()-> new ObjectNotFoundException("Car with this id not found"));
         return carMapper.carEntityToCar(carEntity);
     }
 
@@ -60,10 +62,9 @@ public class DefaultCarService implements CarService {
     }
 
     @Override
-    public List<Car> getAllCarsByBrand(Long brand_id) {
-        BrandEntity brandEntity = brandRepository.findById(brand_id).get();
-        if(brandEntity == null)
-            return null;
+    public List<Car> getAllCarsByBrand(Long brand_id) throws ObjectNotFoundException {
+        BrandEntity brandEntity = brandRepository.findById(brand_id)
+                .orElseThrow(()-> new ObjectNotFoundException("Brand with this id not found"));
 
         Iterable<CarEntity> iterable = carRepository.findAllByBrand(brandEntity);
         ArrayList<Car> cars = new ArrayList<>();
@@ -109,9 +110,13 @@ public class DefaultCarService implements CarService {
     }
 
     @Override
-    public void addCar(CarRequest carRequest) {
-        BrandEntity brandEntity = brandRepository.findById(carRequest.getBrand_id()).get();
-        ModelEntity modelEntity = modelRepository.findById(carRequest.getModel_id()).get();
+    public void addCar(CarRequest carRequest) throws ObjectNotFoundException {
+        BrandEntity brandEntity = brandRepository.findById(carRequest.getBrand_id())
+                .orElseThrow(()-> new ObjectNotFoundException("Brand with this id not found"));
+
+        ModelEntity modelEntity = modelRepository.findById(carRequest.getModel_id())
+                .orElseThrow(()-> new ObjectNotFoundException("Model with this id not found"));
+
         if(brandEntity == null || modelEntity == null)
             return;
 
@@ -131,10 +136,16 @@ public class DefaultCarService implements CarService {
     }
 
     @Override
-    public void editCar(EditCarRequest editCarRequest) {
-        if(carRepository.findById(editCarRequest.getId()).get() != null){
-            BrandEntity brandEntity = brandRepository.findById(editCarRequest.getBrand_id()).get();
-            ModelEntity modelEntity = modelRepository.findById(editCarRequest.getModel_id()).get();
+    public void editCar(EditCarRequest editCarRequest) throws ObjectNotFoundException {
+        carRepository.findById(editCarRequest.getId())
+                .orElseThrow(()-> new ObjectNotFoundException("Car with this id not found"));
+
+            BrandEntity brandEntity = brandRepository.findById(editCarRequest.getBrand_id())
+                    .orElseThrow(()-> new ObjectNotFoundException("Brand with this id not found"));
+
+            ModelEntity modelEntity = modelRepository.findById(editCarRequest.getModel_id())
+                    .orElseThrow(()-> new ObjectNotFoundException("Model with this id not found"));
+
             if(brandEntity == null || modelEntity == null)
                 return;
 
@@ -151,13 +162,14 @@ public class DefaultCarService implements CarService {
             carEntity.setCondition(editCarRequest.getCondition());
 
             carRepository.save(carEntity);
-        }
+
     }
 
     @Override
-    public void deleteCar(Long car_id) {
-        CarEntity carEntity = carRepository.findById(car_id).get();
-        if(carEntity != null)
+    public void deleteCar(Long car_id) throws ObjectNotFoundException {
+        CarEntity carEntity = carRepository.findById(car_id)
+                .orElseThrow(()-> new ObjectNotFoundException("Brand with this id not found"));
+
             carRepository.delete(carEntity);
     }
 
@@ -179,10 +191,9 @@ public class DefaultCarService implements CarService {
     }
 
     @Override
-    public List<Model> getAllModelsByBrand(Long brand_id) {
-        BrandEntity brandEntity = brandRepository.findById(brand_id).get();
-        if(brandEntity == null)
-            return null;
+    public List<Model> getAllModelsByBrand(Long brand_id) throws ObjectNotFoundException {
+        BrandEntity brandEntity = brandRepository.findById(brand_id)
+                .orElseThrow(()-> new ObjectNotFoundException("Brand with this id not found"));
 
         Iterable<ModelEntity> iterable = modelRepository.findAllByBrand(brandEntity);
         ArrayList<Model> models = new ArrayList<>();
@@ -199,10 +210,10 @@ public class DefaultCarService implements CarService {
     }
 
     @Override
-    public void addModel(ModelRequest modelRequest) {
-        BrandEntity brandEntity = brandRepository.findById(modelRequest.getBrand_id()).get();
-        if(brandEntity == null)
-            return;
+    public void addModel(ModelRequest modelRequest) throws ObjectNotFoundException {
+        BrandEntity brandEntity = brandRepository.findById(modelRequest.getBrand_id())
+                .orElseThrow(()-> new ObjectNotFoundException("Brand with this id not found"));
+
         ModelEntity modelEntity = new ModelEntity();
         modelEntity.setModel(modelRequest.getModel());
         modelEntity.setBrand(brandEntity);
@@ -210,10 +221,9 @@ public class DefaultCarService implements CarService {
     }
 
     @Override
-    public void soldCar(SoldRequest soldRequest) {
-        CarEntity carEntity = carRepository.findById(soldRequest.getCar_id()).get();
-        if(carEntity == null)
-            return;
+    public void soldCar(SoldRequest soldRequest) throws ObjectNotFoundException {
+        CarEntity carEntity = carRepository.findById(soldRequest.getCar_id())
+                .orElseThrow(()-> new ObjectNotFoundException("Car with this id not found"));
 
         carEntity.setOwner(soldRequest.getUsername());
         carEntity.setSold(true);
