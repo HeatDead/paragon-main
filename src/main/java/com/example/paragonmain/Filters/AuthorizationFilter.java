@@ -27,12 +27,14 @@ public class AuthorizationFilter extends OncePerRequestFilter {
 
     private AntPathMatcher pathMatcher = new AntPathMatcher();
 
-    private static final List<String> AUTH_WHITELIST = Arrays.asList("/cars", "/cars/","/cars/*" , "/cars/getCarById",
-            "/cars/allIds", "/cars/repair/*", "/cars/carsOf");
+    private static final List<String> AUTH_WHITELIST = Arrays.asList("/cars", "/cars/","/cars" , "/cars/getCarById",
+            "/cars/allIds", "/cars/repair/*", "/cars/carsOf", "/swagger-ui/**", "/swagger-resources/**", "/v2/**");
 
-    private static final List<String> ADMIN_WHITELIST = Arrays.asList("/cars/allInfo");
+    private static final List<String> ADMIN_WHITELIST = Arrays.asList("/cars/allInfo", "/cars/addCar", "/cars/edit",
+            "/cars/delete", "/cars/addBrand", "/cars/addModel");
     private static final List<String> WORKER_WHITELIST = Arrays.asList();
-    private static final List<String> MODERATOR_WHITELIST = Arrays.asList("/cars/allInfo"); // "/cars"
+    private static final List<String> MODERATOR_WHITELIST = Arrays.asList("/cars/allInfo", "/cars/addCar", "/cars/edit",
+            "/cars/delete", "/cars/addBrand", "/cars/addModel");
     private static final List<String> MSERVICE_WHITELIST = Arrays.asList("/cars/sold");
 
     @Override
@@ -66,8 +68,10 @@ public class AuthorizationFilter extends OncePerRequestFilter {
                                     HttpServletResponse response,
                                     FilterChain filterChain) throws ServletException, IOException {
 
-        if (!enabled)
+        if (!enabled) {
             filterChain.doFilter(request, response);
+            return;
+        }
 
         String authHeader = request.getHeader(HttpHeaders.AUTHORIZATION);
 

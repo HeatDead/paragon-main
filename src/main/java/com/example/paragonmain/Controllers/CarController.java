@@ -16,6 +16,8 @@ import org.springframework.web.bind.annotation.*;
 import java.util.ArrayList;
 import java.util.List;
 
+//http://localhost:8080/swagger-ui/index.html#/
+
 @RestController
 @RequestMapping("/cars")
 @CrossOrigin
@@ -25,12 +27,12 @@ public class CarController {
 
     private final BrandToDtoMapper brandMapper;
 
-    @GetMapping("/getCarById")
+    @RequestMapping(value = "/getCarById", method = RequestMethod.GET)
     public Car getCarById(@RequestParam Long id) throws ObjectNotFoundException {
         return carService.getCarById(id);
     }
 
-    @GetMapping
+    @RequestMapping(method = RequestMethod.GET)
     public List<Car> getAllCars(@RequestParam(required = false) Long brand_id) throws ObjectNotFoundException {
         if (brand_id != null)
             return carService.getAllCarsByBrand(brand_id);
@@ -38,12 +40,12 @@ public class CarController {
         return carService.getAllCars();
     }
 
-    @GetMapping("/allIds")
+    @RequestMapping(value = "/allIds", method = RequestMethod.GET)
     public List<Long> getAllCarsId(){
         return carService.getAllCarsIds();
     }
 
-    @GetMapping("/allInfo")
+    @RequestMapping(value = "/allInfo", method = RequestMethod.GET)
     public List<Car> getAllCarsInfo(@RequestParam(required = false) Long brand_id) throws ObjectNotFoundException {
         if (brand_id != null)
             return carService.getAllCarsByBrand(brand_id);
@@ -52,62 +54,48 @@ public class CarController {
     }
 
     //Запрос микросервиса
-    @GetMapping("/carsOf")
+    @RequestMapping(value = "/carsOf", method = RequestMethod.GET)
     public List<Car> getAllCarsOfUser(@RequestParam String owner){
         return carService.getAllCarsByOwner(owner);
     }
 
-    public CarOutput carToCarOutput(Car car){
-        CarOutput carOutput = new CarOutput();
-        carOutput.setId(car.getId());
-        carOutput.setPrice(car.getPrice());
-        carOutput.setYear(car.getYear());
-
-        carOutput.setBrand(new BrandOutput(car.getBrand().getId(), car.getBrand().getBrand()));
-        carOutput.setModel(new ModelOutput(car.getModel().getId(), car.getModel().getModel()));
-
-        carOutput.setSold(car.isSold());
-        carOutput.setCondition(car.getCondition());
-        return carOutput;
-    }
-
-    @PostMapping
+    @RequestMapping(value = "/addCar", method = RequestMethod.POST)
     public void addCar(@RequestBody CarRequest request) throws ObjectNotFoundException {
         carService.addCar(request);
     }
 
-    @PostMapping("/edit")
+    @RequestMapping(value = "/edit", method = RequestMethod.PUT)
     public void editCar(@RequestBody EditCarRequest request) throws ObjectNotFoundException{
         carService.editCar(request);
     }
 
-    @PostMapping("/delete")
+    @RequestMapping(value = "/delete", method = RequestMethod.DELETE)
     public void deleteCar(@RequestParam Long id) throws ObjectNotFoundException{
         carService.deleteCar(id);
     }
 
-    @GetMapping("/brand")
+    @RequestMapping(value = "/brand", method = RequestMethod.GET)
     public List<Brand> getAllBrands(){
         return carService.getAllBrands();
     }
 
-    @GetMapping("/model")
+    @RequestMapping(value = "/model", method = RequestMethod.GET)
     public List<Model> getAllModels(@RequestParam Long brand_id) throws ObjectNotFoundException{
         return carService.getAllModelsByBrand(brand_id);
     }
 
-    @PostMapping("/brand")
+    @RequestMapping(value = "/addBrand", method = RequestMethod.POST)
     public void addBrand(@RequestBody BrandRequest request){
         carService.addBrand(brandMapper.AddBrandRequestToBrand(request));
     }
 
-    @PostMapping("/model")
+    @RequestMapping(value = "/addModel", method = RequestMethod.POST)
     public void addModel(@RequestBody ModelRequest request) throws ObjectNotFoundException{
         carService.addModel(request);
     }
 
     //Запрос микросервиса
-    @PostMapping("/sold")
+    @RequestMapping(value = "/sold", method = RequestMethod.POST)
     public void soldCar(@RequestBody SoldRequest soldRequest) throws ObjectNotFoundException{
         carService.soldCar(soldRequest);
     }
