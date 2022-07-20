@@ -1,6 +1,5 @@
 package com.example.paragonmain.Outputs;
 
-import lombok.Data;
 import lombok.Value;
 
 @Value

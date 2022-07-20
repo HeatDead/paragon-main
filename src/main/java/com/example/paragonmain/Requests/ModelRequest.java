@@ -1,6 +1,5 @@
 package com.example.paragonmain.Requests;
 
-import com.example.paragonmain.Objects.Brand;
 import lombok.Data;
 
 @Data

@@ -1,6 +1,5 @@
 package com.example.paragonmain.Services;
 
-import com.example.paragonmain.Entities.CarEntity;
 import com.example.paragonmain.Exceptions.ObjectNotFoundException;
 import com.example.paragonmain.Objects.Brand;
 import com.example.paragonmain.Objects.Car;
@@ -9,7 +8,6 @@ import com.example.paragonmain.Requests.CarRequest;
 import com.example.paragonmain.Requests.EditCarRequest;
 import com.example.paragonmain.Requests.ModelRequest;
 import com.example.paragonmain.Requests.SoldRequest;
-import org.springframework.http.HttpHeaders;
 
 import java.util.List;
 

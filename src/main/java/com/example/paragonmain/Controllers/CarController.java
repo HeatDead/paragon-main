@@ -5,15 +5,11 @@ import com.example.paragonmain.Mappers.BrandToDtoMapper;
 import com.example.paragonmain.Objects.Brand;
 import com.example.paragonmain.Objects.Car;
 import com.example.paragonmain.Objects.Model;
-import com.example.paragonmain.Outputs.BrandOutput;
-import com.example.paragonmain.Outputs.CarOutput;
-import com.example.paragonmain.Outputs.ModelOutput;
 import com.example.paragonmain.Requests.*;
 import com.example.paragonmain.Services.CarService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.*;
 
-import java.util.ArrayList;
 import java.util.List;
 
 //http://localhost:8080/swagger-ui/index.html#/
