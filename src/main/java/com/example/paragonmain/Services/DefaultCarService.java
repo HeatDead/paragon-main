@@ -39,7 +39,7 @@ public class DefaultCarService implements CarService {
     @Override
     public Car getCarById(Long id) throws ObjectNotFoundException {
         CarEntity carEntity = carRepository.findById(id)
-                .orElseThrow(()-> new ObjectNotFoundException("Car with this id not found"));
+                .orElseThrow(()-> new ObjectNotFoundException("Автомобиль с этим id не найден"));
         return carMapper.carEntityToCar(carEntity);
     }
 
@@ -64,7 +64,7 @@ public class DefaultCarService implements CarService {
     @Override
     public List<Car> getAllCarsByBrand(Long brand_id) throws ObjectNotFoundException {
         BrandEntity brandEntity = brandRepository.findById(brand_id)
-                .orElseThrow(()-> new ObjectNotFoundException("Brand with this id not found"));
+                .orElseThrow(()-> new ObjectNotFoundException("Бренд с этим id не найден"));
 
         Iterable<CarEntity> iterable = carRepository.findAllByBrand(brandEntity);
         ArrayList<Car> cars = new ArrayList<>();
@@ -112,16 +112,16 @@ public class DefaultCarService implements CarService {
     @Override
     public void addCar(CarRequest carRequest) throws ObjectNotFoundException {
         BrandEntity brandEntity = brandRepository.findById(carRequest.getBrand_id())
-                .orElseThrow(()-> new ObjectNotFoundException("Brand with this id not found"));
+                .orElseThrow(()-> new ObjectNotFoundException("Бренд с этим id не найден"));
 
         ModelEntity modelEntity = modelRepository.findById(carRequest.getModel_id())
-                .orElseThrow(()-> new ObjectNotFoundException("Model with this id not found"));
+                .orElseThrow(()-> new ObjectNotFoundException("Модель с этим id не найдена"));
 
         if(brandEntity == null || modelEntity == null)
-            return;
+            throw new IllegalArgumentException("Не присвоен бренд или модель");
 
         if(modelEntity.getBrand().getId() != brandEntity.getId())
-            return;
+            throw new IllegalArgumentException("Модель не соответствует бренду");
 
         CarEntity carEntity = new CarEntity();
         carEntity.setPrice(carRequest.getPrice());
@@ -138,19 +138,19 @@ public class DefaultCarService implements CarService {
     @Override
     public void editCar(EditCarRequest editCarRequest) throws ObjectNotFoundException {
         carRepository.findById(editCarRequest.getId())
-                .orElseThrow(()-> new ObjectNotFoundException("Car with this id not found"));
+                .orElseThrow(()-> new ObjectNotFoundException("Автомобиль с этим id не найден"));
 
             BrandEntity brandEntity = brandRepository.findById(editCarRequest.getBrand_id())
-                    .orElseThrow(()-> new ObjectNotFoundException("Brand with this id not found"));
+                    .orElseThrow(()-> new ObjectNotFoundException("Бренд с этим id не найден"));
 
             ModelEntity modelEntity = modelRepository.findById(editCarRequest.getModel_id())
-                    .orElseThrow(()-> new ObjectNotFoundException("Model with this id not found"));
+                    .orElseThrow(()-> new ObjectNotFoundException("Модель с этим id не найдена"));
 
             if(brandEntity == null || modelEntity == null)
-                return;
+                throw new IllegalArgumentException("Не присвоен бренд или модель");
 
             if(modelEntity.getBrand().getId() != brandEntity.getId())
-                return;
+                throw new IllegalArgumentException("Модель не соответствует бренду");
 
             CarEntity carEntity = new CarEntity();
             carEntity.setId(editCarRequest.getId());
@@ -168,7 +168,7 @@ public class DefaultCarService implements CarService {
     @Override
     public void deleteCar(Long car_id) throws ObjectNotFoundException {
         CarEntity carEntity = carRepository.findById(car_id)
-                .orElseThrow(()-> new ObjectNotFoundException("Brand with this id not found"));
+                .orElseThrow(()-> new ObjectNotFoundException("Бренд с этим id не найден"));
 
             carRepository.delete(carEntity);
     }
@@ -193,7 +193,7 @@ public class DefaultCarService implements CarService {
     @Override
     public List<Model> getAllModelsByBrand(Long brand_id) throws ObjectNotFoundException {
         BrandEntity brandEntity = brandRepository.findById(brand_id)
-                .orElseThrow(()-> new ObjectNotFoundException("Brand with this id not found"));
+                .orElseThrow(()-> new ObjectNotFoundException("Бренд с этим id не найден"));
 
         Iterable<ModelEntity> iterable = modelRepository.findAllByBrand(brandEntity);
         ArrayList<Model> models = new ArrayList<>();
@@ -205,14 +205,19 @@ public class DefaultCarService implements CarService {
 
     @Override
     public void addBrand(Brand brand) {
+        if(brand.getBrand().equals(""))
+            throw new IllegalArgumentException("Название бренда не может быть пустым");
         BrandEntity brandEntity = brandMapper.brandToBrandEntity(brand);
         brandRepository.save(brandEntity);
     }
 
     @Override
     public void addModel(ModelRequest modelRequest) throws ObjectNotFoundException {
+        if(modelRequest.getModel().equals(""))
+            throw new IllegalArgumentException("Название модели не может быть пустым");
+
         BrandEntity brandEntity = brandRepository.findById(modelRequest.getBrand_id())
-                .orElseThrow(()-> new ObjectNotFoundException("Brand with this id not found"));
+                .orElseThrow(()-> new ObjectNotFoundException("Бренд с этим id не найден"));
 
         ModelEntity modelEntity = new ModelEntity();
         modelEntity.setModel(modelRequest.getModel());
@@ -223,7 +228,7 @@ public class DefaultCarService implements CarService {
     @Override
     public void soldCar(SoldRequest soldRequest) throws ObjectNotFoundException {
         CarEntity carEntity = carRepository.findById(soldRequest.getCar_id())
-                .orElseThrow(()-> new ObjectNotFoundException("Car with this id not found"));
+                .orElseThrow(()-> new ObjectNotFoundException("Автомобиль с этим id не найден"));
 
         carEntity.setOwner(soldRequest.getUsername());
         carEntity.setSold(true);
